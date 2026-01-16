@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  app:
+    image: employee-service:1.0
+    container_name: employee-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/employeedb
+
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
