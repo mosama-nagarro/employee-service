@@ -1,10 +1,10 @@
 package com.employee.repository;
 
 import com.employee.model.Employee;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Repository class to store Employee data
  */
-public interface EmployeeRepository extends MongoRepository<Employee, String> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 }

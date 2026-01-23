@@ -16,6 +16,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/employees")
+@CrossOrigin(origins = "*")
 public class EmployeeController {
 
     private static final Logger logger = LogManager.getLogger(EmployeeController.class);

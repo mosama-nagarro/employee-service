@@ -42,7 +42,7 @@ public class EmployeeService {
      * @return Employee entity
      */
     public Optional<Optional<Employee>> getEmployee(String id) {
-        return Optional.of(repository.findById(id));
+        return Optional.of(repository.findById(Long.valueOf(id)));
     }
 
     /**
@@ -51,6 +51,6 @@ public class EmployeeService {
      * @param id - employee id to be deleted
      */
     public void deleteEmployee(String id) {
-        repository.deleteById(id);
+        repository.deleteById(Long.valueOf(id));
     }
 }

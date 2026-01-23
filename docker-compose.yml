@@ -7,15 +7,26 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mongo
+      - mysql
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/employeedb
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employeedb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: employee
+      SPRING_DATASOURCE_PASSWORD: employee123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
 
-  mongo:
-    image: mongo:7
-    container_name: mongo
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: employeedb
+      MYSQL_USER: employee
+      MYSQL_PASSWORD: employee123
+      MYSQL_ROOT_PASSWORD: root123
     volumes:
-      - mongo-data:/data/db
+      - mysql-data:/var/lib/mysql
 
 volumes:
-  mongo-data:
+  mysql-data:

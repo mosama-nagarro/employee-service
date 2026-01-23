@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            margin: 0;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 14px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            background: #4f46e5;
+            color: white;
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background: #4338ca;
+        }
+
+        #fetchAllBtn {
+            margin-bottom: 20px;
+            width: fit-content;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        li button {
+            background: #ef4444;
+        }
+
+        li button:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Employee Management</h1>
+
+<div class="container">
+
+    <h2>Add Employee</h2>
+    <form id="employeeForm">
+        <input type="text" id="name" placeholder="Name" required>
+        <input type="text" id="role" placeholder="Role" required>
+        <input type="number" id="salary" placeholder="Salary" required>
+        <button type="submit">Add Employee</button>
+    </form>
+
+    <h2>Fetch Employee by ID</h2>
+    <form id="fetchByIdForm">
+        <input type="number" id="empId" placeholder="Employee ID" required>
+        <button type="submit">Fetch Employee</button>
+    </form>
+
+    <h2>All Employees</h2>
+    <button id="fetchAllBtn">Show All Employees</button>
+
+    <h2>Employee Details</h2>
+    <ul id="employeeList"></ul>
+
+</div>
+
+<script>
+    const employeeList = document.getElementById('employeeList');
+
+    function displayEmployee(emp) {
+        const li = document.createElement('li');
+        li.textContent = `${emp.id} - ${emp.name} - ${emp.role} - ${emp.salary}`;
+
+        const del = document.createElement('button');
+        del.textContent = 'Delete';
+        del.onclick = async () => {
+            await fetch(`/employees/${emp.id}`, { method: 'DELETE' });
+            li.remove();
+        };
+
+        li.appendChild(del);
+        employeeList.appendChild(li);
+    }
+
+    document.getElementById('employeeForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const role = document.getElementById('role').value;
+        const salary = document.getElementById('salary').value;
+
+        const res = await fetch('/employees', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, role, salary })
+        });
+
+        const emp = await res.json();
+        displayEmployee(emp);
+        e.target.reset();
+    });
+
+    document.getElementById('fetchByIdForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const id = document.getElementById('empId').value;
+        employeeList.innerHTML = '';
+
+        try {
+            const res = await fetch(`/employees/${id}`);
+            if (res.ok) {
+                const emp = await res.json();
+                const employeeData = emp?.[0] ?? emp;
+                displayEmployee(employeeData);
+            } else {
+                employeeList.innerHTML = `<li>Employee not found</li>`;
+            }
+        } catch (err) {
+            employeeList.innerHTML = `<li>Error fetching employee</li>`;
+        }
+    });
+
+    document.getElementById('fetchAllBtn').addEventListener('click', async () => {
+        employeeList.innerHTML = '';
+        try {
+            const res = await fetch('/employees');
+            const employees = await res.json();
+            employees.length
+                ? employees.forEach(displayEmployee)
+                : employeeList.innerHTML = '<li>No employees found</li>';
+        } catch {
+            employeeList.innerHTML = `<li>Error fetching employees</li>`;
+        }
+    });
+</script>
+
+</body>
+</html>
