@@ -1,6 +1,6 @@
 # Employee Service
 
-A Spring Boot RESTful microservice for managing employees, built with **Spring Boot**, **MongoDB**, and **Docker**.  
+A Spring Boot RESTful microservice for managing employees, built with **Spring Boot**, **MySQL**, and **Docker**.  
 The application allows you to create and fetch employee records and is fully containerized using **Docker Compose**.
 
 ---
@@ -10,10 +10,10 @@ The application allows you to create and fetch employee records and is fully con
 - Create employee records
 - Fetch all employees
 - REST APIs using Spring Boot
-- MongoDB as the data store
+- MySQL as the data store
 - Dockerized application
-- Docker Compose for multi-container setup (App + MongoDB)
-- Persistent MongoDB storage using Docker volumes
+- Docker Compose for multi-container setup (App + MySQL)
+- Persistent MySQL storage using Docker volumes
 
 ---
 
@@ -21,8 +21,8 @@ The application allows you to create and fetch employee records and is fully con
 
 - **Java 17**
 - **Spring Boot**
-- **Spring Data MongoDB**
-- **MongoDB**
+- **Spring Data MySQL**
+- **MySQL**
 - **Maven**
 - **Docker & Docker Compose**
 
