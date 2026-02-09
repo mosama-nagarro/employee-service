@@ -1,25 +1,40 @@
 version: "3.9"
 
+networks:
+  employee-net:
+    driver: bridge
+
+volumes:
+  mysql-data:
+
 services:
   app:
-    image: employee-service:1.0
+    build: .
+    image: employee-service-optimized:1.0
     container_name: employee-service
     ports:
       - "8080:8080"
     depends_on:
       - mysql
+    networks:
+      - employee-net
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employeedb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employeedb
       SPRING_DATASOURCE_USERNAME: employee
       SPRING_DATASOURCE_PASSWORD: employee123
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
 
   mysql:
     image: mysql:8.0
     container_name: mysql
-    ports:
-      - "3306:3306"
+    networks:
+      - employee-net
     environment:
       MYSQL_DATABASE: employeedb
       MYSQL_USER: employee
@@ -27,6 +42,3 @@ services:
       MYSQL_ROOT_PASSWORD: root123
     volumes:
       - mysql-data:/var/lib/mysql
-
-volumes:
-  mysql-data:

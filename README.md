@@ -31,7 +31,7 @@ The application allows you to create and fetch employee records and is fully con
 
 Follow below steps to clone and run the application in local :
 
-1. git clone <your-repo-url>
+1. git clone https://github.com/mosama-nagarro/employee-service
 2. cd employee-service
 3. docker build -t employee-service:1.0 .
 4. docker compose up
