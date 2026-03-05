@@ -11,15 +11,15 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-# Non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Create a non-root user with home directory /app
+RUN adduser -D -h /app nonrootuser
 
 # Install bash and netcat for inline wait as mysql takes time to initialize
 RUN apk add --no-cache bash busybox-extras
 
 COPY --from=build /build/target/employee-service-1.0.0.jar app.jar
 
-USER appuser
+USER nonrootuser
 
 ENTRYPOINT ["sh", "-c", "\
   echo 'Waiting for MySQL to be ready...'; \

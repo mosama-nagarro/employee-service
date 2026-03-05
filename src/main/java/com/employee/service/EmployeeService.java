@@ -41,8 +41,8 @@ public class EmployeeService {
      * @param id - employee id to be fetched
      * @return Employee entity
      */
-    public Optional<Optional<Employee>> getEmployee(String id) {
-        return Optional.of(repository.findById(Long.valueOf(id)));
+    public Optional<Employee> getEmployee(String id) {
+        return repository.findById(Long.valueOf(id));
     }
 
     /**

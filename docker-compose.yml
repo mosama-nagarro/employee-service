@@ -7,38 +7,44 @@ networks:
 volumes:
   mysql-data:
 
-services:
-  app:
-    build: .
-    image: employee-service-optimized:1.0
-    container_name: employee-service
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mysql
-    networks:
-      - employee-net
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employeedb
-      SPRING_DATASOURCE_USERNAME: employee
-      SPRING_DATASOURCE_PASSWORD: employee123
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
-    read_only: true
-    tmpfs:
-      - /tmp
-    security_opt:
-      - no-new-privileges:true
+secrets:
+  mysql_password:
+    file: ./secrets/mysql_password.txt
+  mysql_root_password:
+    file: ./secrets/mysql_root_password.txt
 
+services:
   mysql:
     image: mysql:8.0
     container_name: mysql
     networks:
       - employee-net
+    secrets:
+      - mysql_password
+      - mysql_root_password
     environment:
       MYSQL_DATABASE: employeedb
       MYSQL_USER: employee
-      MYSQL_PASSWORD: employee123
-      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
     volumes:
       - mysql-data:/var/lib/mysql
+
+  app:
+    image: mosamanagarro/employee-service-optimized:1.0
+    container_name: employee-service
+    networks:
+      - employee-net
+    ports:
+      - "8080:8080"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employeedb
+      SPRING_DATASOURCE_USERNAME: employee
+      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/mysql_password

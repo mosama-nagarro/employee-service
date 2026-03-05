@@ -57,7 +57,7 @@ public class EmployeeController {
      * @return Employee response entity
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Optional<Employee>>> getEmployee(@PathVariable String id) {
+    public ResponseEntity<Optional<Employee>> getEmployee(@PathVariable String id) {
         logger.info("Request received to fetch employee with ID : {}", id);
         return new ResponseEntity<>(service.getEmployee(id), HttpStatus.OK);
     }
